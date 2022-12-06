@@ -56,57 +56,58 @@ def runGame():
     direction = RIGHT
 
     # Start the apple in a random place.
-    apple = getRandomLocation()
+    apple = getRandomLocation() #spawns the apple anywhere on the game map. N.G
 
     while True: # main game loop
         for event in pygame.event.get(): # event handling loop
-            if event.type == QUIT:
-                terminate()
-            elif event.type == KEYDOWN:
-                if (event.key == K_LEFT or event.key == K_a) and direction != RIGHT:
-                    direction = LEFT
-                elif (event.key == K_RIGHT or event.key == K_d) and direction != LEFT:
-                    direction = RIGHT
-                elif (event.key == K_UP or event.key == K_w) and direction != DOWN:
-                    direction = UP
-                elif (event.key == K_DOWN or event.key == K_s) and direction != UP:
-                    direction = DOWN
-                elif event.key == K_ESCAPE:
-                    terminate()
+            if event.type == QUIT: #Assigns an if statememnt to what would happen if the player would press the quit button. N.G
+                terminate() #The game will close. N.G
+            elif event.type == KEYDOWN: #assigns if statement to if any of the direction buttons are pressed. N.G
+                if (event.key == K_LEFT or event.key == K_a) and direction != RIGHT: #If the player presses the left key, and not the right key. N.G
+                    direction = LEFT #The worm will move left. N.G
+                elif (event.key == K_RIGHT or event.key == K_d) and direction != LEFT: #If the player presses the right key, and not the let key. N.G
+                    direction = RIGHT #The worm will move right. N.G
+                elif (event.key == K_UP or event.key == K_w) and direction != DOWN: #If the player presses the up key, and not the down key. N.G
+                    direction = UP #The worm will move up. N.G
+                elif (event.key == K_DOWN or event.key == K_s) and direction != UP: #If the player presses the down key, and not the up key. N.G
+                    direction = DOWN #The worm will move down. N.G
+                elif event.key == K_ESCAPE: #If the player presses the escape key. N.G
+                    terminate() #The game will close. N.G
 
         # check if the worm has hit itself or the edge
-        if wormCoords[HEAD]['x'] == -1 or wormCoords[HEAD]['x'] == CELLWIDTH or wormCoords[HEAD]['y'] == -1 or wormCoords[HEAD]['y'] == CELLHEIGHT:
-            return # game over
-        for wormBody in wormCoords[1:]:
-            if wormBody['x'] == wormCoords[HEAD]['x'] and wormBody['y'] == wormCoords[HEAD]['y']:
-                return # game over
+        if wormCoords[HEAD]['x'] == -1 or wormCoords[HEAD]['x'] == CELLWIDTH or wormCoords[HEAD]['y'] == -1 or wormCoords[HEAD]['y'] == CELLHEIGHT: #Assiging an if statement to what would happen if the head of the worm would hit one of the walls. N.G
+            #Cellwidth being the walls on the left and right, cellheight being the walls on the top and bottom. It would hit the left and right walls when travelling in the x direction, and would hit the top and bottom walls when moving in the y direction. N.G
+            return game over #The game would end when the player hits the wall. N.G
+        for wormBody in wormCoords[1:]: #Assigning a for statement to what would happen if the worm hits itself. N.G
+            if wormBody['x'] == wormCoords[HEAD]['x'] and wormBody['y'] == wormCoords[HEAD]['y']: #If the head of the worm hits its own body, or when the position of the bodyequals the position of the head. N.G
+                return game over #The game will end when this happens. N.G
 
-        # check if worm has eaten an apply
-        if wormCoords[HEAD]['x'] == apple['x'] and wormCoords[HEAD]['y'] == apple['y']:
+        # check if worm has eaten an apple
+        if wormCoords[HEAD]['x'] == apple['x'] and wormCoords[HEAD]['y'] == apple['y']: #when the position of the head of the worm equals the position of an apple. N.G
             # don't remove worm's tail segment
             apple = getRandomLocation() # set a new apple somewhere
         else:
             del wormCoords[-1] # remove worm's tail segment
 
         # move the worm by adding a segment in the direction it is moving
-        if direction == UP:
-            newHead = {'x': wormCoords[HEAD]['x'], 'y': wormCoords[HEAD]['y'] - 1}
-        elif direction == DOWN:
-            newHead = {'x': wormCoords[HEAD]['x'], 'y': wormCoords[HEAD]['y'] + 1}
-        elif direction == LEFT:
-            newHead = {'x': wormCoords[HEAD]['x'] - 1, 'y': wormCoords[HEAD]['y']}
-        elif direction == RIGHT:
-            newHead = {'x': wormCoords[HEAD]['x'] + 1, 'y': wormCoords[HEAD]['y']}
-        wormCoords.insert(0, newHead)
-        DISPLAYSURF.fill(BGCOLOR)
-        drawGrid()
-        drawWorm(wormCoords)
-        drawApple(apple)
-        drawScore(len(wormCoords) - 3)
-        pygame.display.update()
-        FPSCLOCK.tick(FPS)
+        if direction == UP: #if the worm is currently moving upwards. N.G
+            newHead = {'x': wormCoords[HEAD]['x'], 'y': wormCoords[HEAD]['y'] - 1} #The new addition to the worm will spawn at the lowest y-value of the worms body that it will allow(very bottom of the snake). N.G
+        elif direction == DOWN: #If the worm is currently moving downwards. N.G
+            newHead = {'x': wormCoords[HEAD]['x'], 'y': wormCoords[HEAD]['y'] + 1} #The new addition to the worm will spawn at the highest y-value of the worms body that it will allow(very top of the snake). N.G
+        elif direction == LEFT: #if the worm is currently moving to the left. N.G
+            newHead = {'x': wormCoords[HEAD]['x'] - 1, 'y': wormCoords[HEAD]['y']} #The new addition to the worm will spawn at the rightmost x-value of the worms body that it will allow. N.G
+        elif direction == RIGHT: #if the worm is currently mvoing to the right. N.G
+            newHead = {'x': wormCoords[HEAD]['x'] + 1, 'y': wormCoords[HEAD]['y']} #The new addition to the worm will spawn at the leftmost x-value of the worms body that it will allow. N.G
+        wormCoords.insert(0, newHead) #inserts a new head for the body of the worm. N.G
+        DISPLAYSURF.fill(BGCOLOR) #matches the colour of the new body to the rest of the snake. N.G
+        drawGrid() #spawns grid at tiles in which the worm just left(swaps a worm value for a grid value). N.G
+        drawWorm(wormCoords) #spawns thw worm at tiles in which it moves to. N.G
+        drawApple(apple) #draws the apple onto the grid. N.G
+        drawScore(len(wormCoords) - 3) #displays the score on the screen, increases with more apples that the worm eats N.G
+        pygame.display.update() #displays game updates. N.G
+        FPSCLOCK.tick(FPS) #FPS(frames per second) is how many times a game reloads in one second. High frames are desirable for smoother gameplay. This functiom enables a clock to count the seconds in which the frame rate will be based off of. N.G
 
-def drawPressKeyMsg():
+def drawPressKeyMsg(): #
     pressKeySurf = BASICFONT.render('Press a key to play.', True, DARKGRAY)
     pressKeyRect = pressKeySurf.get_rect()
     pressKeyRect.topleft = (WINDOWWIDTH - 200, WINDOWHEIGHT - 30)
